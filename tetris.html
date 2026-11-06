@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tetris</title>
+<!-- Baseado em simple-tetris, de Robert Rypuła (MIT) - https://github.com/robertrypula/simple-tetris -->
+<style>
+#tetris{width:304px;max-width:100%;margin:0 auto;padding:12px;background:#758c7a;color:#061006;font:bold 13px sans-serif;text-align:center;user-select:none;touch-action:manipulation;outline:0}
+#tetris canvas{width:100%;display:block;outline:3px solid #061006}
+#tetris button{width:40px;height:40px;margin:16px 2px 4px;padding:0;background:#06100605;color:inherit;font:inherit;border:1px solid #061006;cursor:pointer}
+#tetris button:active{background:#061006;color:#758c7a}
+</style>
+<div id="tetris" tabindex="0">
+  <canvas width="160" height="320"></canvas>
+  <button data-k="0">&lt;</button><button data-k="1">R</button><button data-k="2">NEW</button><button data-k="3">\/</button><button data-k="4">&gt;</button>
+  <div>Clique e use as setas + Enter</div>
+</div>
+<script>
+(() => {
+  const W = 8, H = 16, $ = document.getElementById('tetris'), g = $.querySelector('canvas').getContext('2d'),
+    // I J L T O S Z: 4 linhas por peça, cada uma com as 4 rotações (4 bits cada)
+    S = [[0x0402,0x04f2,0xf402,0x0402],[0x0406,0xe484,0x2ce4,0x0000],[0x0406,0x24e2,0xe682,0x0000],
+         [0x0208,0xe64c,0x42e8,0x0000],[0x0000,0xcccc,0xcccc,0x0000],[0x0868,0x6ccc,0xc404,0x0000],[0x04c4,0xcc6c,0x6808,0x0000]],
+    empty = () => Array.from({ length: H }, () => Array(W).fill(0));
+  let b = empty(), s = -1, x, y, r, lines = 0, over = 1, timer, hold = 0;
+
+  const cell = (i, j, rot) => S[s] && i >= 0 && i < 4 && j >= 0 && j < 4 && (S[s][j] >> (15 - i - 4 * rot)) & 1;
+
+  const hit = (nx, ny, nr) => {
+    for (let j = 0; j < 4; j++)
+      for (let i = 0; i < 4; i++)
+        if (cell(i, j, nr) && (nx + i < 0 || nx + i >= W || ny + j >= H || b[ny + j][nx + i])) return 1;
+  };
+
+  const draw = () => {
+    g.clearRect(0, 0, 160, 320);
+    g.fillStyle = g.strokeStyle = '#061006';
+    g.lineWidth = 3;
+    for (let j = 0; j < H; j++)
+      for (let i = 0; i < W; i++) {
+        g.globalAlpha = b[j][i] || cell(i - x, j - y, r) ? 1 : .05;
+        g.strokeRect(i * 20 + 2.5, j * 20 + 2.5, 15, 15);
+        g.fillRect(i * 20 + 5, j * 20 + 5, 10, 10);
+      }
+  };
+
+  const loop = () => {
+    clearTimeout(timer);
+    if (!over) timer = setTimeout(() => { act(3, 1); loop(); }, Math.max(100, 1000 - lines * 17));
+  };
+
+  const spawn = () => {
+    s = Math.random() * 7 | 0; x = 2; y = r = 0;
+    hold = Date.now() + 300; // evita que "descer" apertado derrube a próxima peça na hora
+    if (hit(x, y, r)) over = 1;
+  };
+
+  const lock = () => {
+    for (let j = 0; j < 4; j++)
+      for (let i = 0; i < 4; i++) if (cell(i, j, r)) b[y + j][x + i] = 1;
+    b = b.filter(l => l.some(v => !v));
+    lines += H - b.length;
+    while (b.length < H) b.unshift(Array(W).fill(0));
+    spawn();
+  };
+
+  // k: 0 esquerda, 1 girar, 2 novo jogo, 3 descer, 4 direita
+  const act = (k, auto) => {
+    if (k == 2) { b = empty(); lines = over = 0; spawn(); loop(); return draw(); }
+    if (over || (k == 3 && !auto && Date.now() < hold)) return;
+    const nx = x + (k == 4) - (k == 0), ny = y + (k == 3), nr = k == 1 ? (r + 1) & 3 : r;
+    if (!hit(nx, ny, nr)) { x = nx; y = ny; r = nr; }
+    else if (k == 3) lock();
+    draw();
+  };
+
+  const K = { ArrowLeft: 0, ArrowUp: 1, Enter: 2, ArrowDown: 3, ArrowRight: 4 };
+  $.onkeydown = e => {
+    const k = K[e.code];
+    if (k == null) return;
+    e.preventDefault();
+    if (!(e.repeat && (k == 1 || k == 2))) act(k);
+  };
+
+  $.querySelectorAll('button').forEach(B => {
+    const k = +B.dataset.k; let t, i;
+    const stop = () => { clearTimeout(t); clearInterval(i); };
+    B.onpointerdown = e => {
+      e.preventDefault(); $.focus(); act(k);
+      if (k != 1 && k != 2) t = setTimeout(() => i = setInterval(act, 60, k), 250); // repetição ao segurar
+    };
+    B.onpointerup = B.onpointerleave = B.onpointercancel = stop;
+  });
+  $.onpointerdown = () => $.focus();
+  draw();
+})();
+</script>

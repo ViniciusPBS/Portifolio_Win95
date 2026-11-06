@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre Meus Projetos</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      padding: 20px;
+      line-height: 1.5;
+    }
+
+    h1 {
+      font-size: 22px;
+      border-bottom: 2px solid #000080;
+      color: #000080;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 16px;
+      color: #333333;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .badge-container {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: #c0c0c0;
+      border-top: 1px solid #fff;
+      border-left: 1px solid #fff;
+      border-right: 1px solid #000;
+      border-bottom: 1px solid #000;
+      padding: 2px 8px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .retro-box {
+      background: #ffffcc;
+      border: 1px solid #999900;
+      padding: 10px;
+      margin: 15px 0;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📁 Meus Projetos & Tecnologias</h1>
+  <p>Bem-vindo à central de projetos interativos do meu portfólio no estilo Windows 95!</p>
+  
+  <h2>🛠 Tecnologias Utilizadas</h2>
+  <div class="badge-container">
+    <span class="badge">HTML5</span>
+    <span class="badge">CSS3 (Pixel Art / Win95)</span>
+    <span class="badge">JavaScript (Vanilla ES6+)</span>
+    <span class="badge">Canvas API</span>
+    <span class="badge">iFrames Dinâmicos</span>
+  </div>
+
+  <h2>🎮 O que você encontra aqui?</h2>
+  <p>Navegue pelo Windows Explorer na janela de <b>Projetos</b> para abrir cada aplicação individualmente em uma nova janela independente com iframe. Você pode abrir várias janelas ao mesmo tempo, redimensioná-las, maximizá-las e minimizá-las para a barra de tarefas!</p>
+
+  <div class="retro-box">
+    <b>💡 Como incluir seus próprios projetos:</b><br>
+    Abra o arquivo <code>script.js</code> e insira suas páginas web ou links no array <code>listaProjetos</code>. O sistema gerará automaticamente os ícones no Explorer e abrirá o iframe correspondente ao clicar!
+  </div>
+</body>
+</html>
+

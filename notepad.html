@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloco de Notas</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    body {
+      background-color: #c0c0c0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .menu-bar {
+      display: flex;
+      gap: 12px;
+      padding: 3px 6px;
+      border-bottom: 1px solid #808080;
+      box-shadow: 0 1px 0 #fff;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      font-size: 12px;
+      user-select: none;
+    }
+
+    .menu-item {
+      cursor: pointer;
+    }
+    .menu-item u {
+      text-decoration: underline;
+    }
+
+    .editor-container {
+      flex: 1;
+      padding: 2px;
+      display: flex;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0 #000000;
+      padding: 6px;
+      font-size: 13px;
+      line-height: 1.4;
+      background: #ffffff;
+      color: #000000;
+      outline: none;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .status-bar {
+      background: #c0c0c0;
+      border-top: 1px solid #808080;
+      box-shadow: 0 -1px 0 #fff;
+      padding: 2px 8px;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      font-size: 11px;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-bar">
+    <span class="menu-item"><u>F</u>ile</span>
+    <span class="menu-item"><u>E</u>dit</span>
+    <span class="menu-item"><u>S</u>earch</span>
+    <span class="menu-item"><u>H</u>elp</span>
+  </div>
+
+  <div class="editor-container">
+    <textarea id="textEditor">========================================================
+           PORTFOLIO RETRO - WINDOWS 95 EDITION
+========================================================
+
+Autor: Vinicius P.B.
+Sistema: Microsoft Windows 95 Explorer Portfolio
+
+[ PROJETOS EM DESTAQUE ]
+1. Tetris 95:
+   - Jogo clássico desenvolvido com HTML5 Canvas e JS puro.
+   - Totalmente jogável com teclado e controles em tela.
+
+2. Calculadora Windows 95:
+   - Réplica fiel da calculadora padrão com operações completas.
+
+3. Campo Minado:
+   - Jogo estratégico clássico dos sistemas Windows.
+
+[ DICA ]
+Todos os projetos agora abrem diretamente em novas janelas
+com iframes, exatamente como no Windows 95!
+
+Para adicionar novos projetos, basta editar o array 'listaProjetos'
+no arquivo script.js.
+========================================================</textarea>
+  </div>
+
+  <div class="status-bar">
+    <span id="charCount">Lin 1, Col 1</span>
+    <span>Windows (CRLF)</span>
+  </div>
+
+  <script>
+    const textarea = document.getElementById("textEditor");
+    const charCount = document.getElementById("charCount");
+
+    function updateCursorPos() {
+      const pos = textarea.selectionStart;
+      const textLines = textarea.value.substr(0, pos).split("\n");
+      const currentLine = textLines.length;
+      const currentCol = textLines[textLines.length - 1].length + 1;
+      charCount.innerText = `Lin ${currentLine}, Col ${currentCol}`;
+    }
+
+    textarea.addEventListener("keyup", updateCursorPos);
+    textarea.addEventListener("click", updateCursorPos);
+  </script>
+</body>
+</html>
+

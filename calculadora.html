@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: #c0c0c0;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .menu-bar {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #808080;
+      box-shadow: 0 1px 0 #fff;
+      margin-bottom: 8px;
+    }
+
+    .menu-item {
+      cursor: pointer;
+    }
+    .menu-item u {
+      text-decoration: underline;
+    }
+
+    .display-container {
+      background: #ffffff;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: inset 1px 1px 0 #000000;
+      padding: 4px 8px;
+      margin-bottom: 10px;
+      text-align: right;
+    }
+
+    #display {
+      font-size: 20px;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-controls {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .mem-box {
+      width: 32px;
+      height: 28px;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      background: #c0c0c0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .calc-btn {
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080;
+      color: #000;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    .calc-btn:active {
+      border-top: 2px solid #000000;
+      border-left: 2px solid #000000;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      box-shadow: none;
+      padding: 5px 3px 3px 5px;
+    }
+
+    .btn-top {
+      flex: 1;
+      height: 28px;
+      color: darkblue;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 36px 1fr 1fr 1fr 1fr 1fr;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .btn-mem {
+      color: red;
+    }
+
+    .btn-num {
+      color: blue;
+      font-size: 14px;
+    }
+
+    .btn-op {
+      color: red;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-bar">
+    <span class="menu-item"><u>E</u>dit</span>
+    <span class="menu-item"><u>V</u>iew</span>
+    <span class="menu-item"><u>H</u>elp</span>
+  </div>
+
+  <div class="display-container">
+    <div id="display">0</div>
+  </div>
+
+  <div class="top-controls">
+    <div class="mem-box" id="memIndicator"></div>
+    <div class="btn-row">
+      <button class="calc-btn btn-top" onclick="backspace()">Backspace</button>
+      <button class="calc-btn btn-top" onclick="clearEntry()">CE</button>
+      <button class="calc-btn btn-top" onclick="clearAll()">C</button>
+    </div>
+  </div>
+
+  <div class="grid-container">
+    <!-- Linha 1 -->
+    <button class="calc-btn btn-mem" onclick="memClear()">MC</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('7')">7</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('8')">8</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('9')">9</button>
+    <button class="calc-btn btn-op" onclick="setOp('/')">/</button>
+    <button class="calc-btn btn-op" onclick="calcSqrt()">sqrt</button>
+
+    <!-- Linha 2 -->
+    <button class="calc-btn btn-mem" onclick="memRecall()">MR</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('4')">4</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('5')">5</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('6')">6</button>
+    <button class="calc-btn btn-op" onclick="setOp('*')">*</button>
+    <button class="calc-btn btn-op" onclick="calcPercent()">%</button>
+
+    <!-- Linha 3 -->
+    <button class="calc-btn btn-mem" onclick="memSave()">MS</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('1')">1</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('2')">2</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('3')">3</button>
+    <button class="calc-btn btn-op" onclick="setOp('-')">-</button>
+    <button class="calc-btn btn-op" onclick="calcInvert()">1/x</button>
+
+    <!-- Linha 4 -->
+    <button class="calc-btn btn-mem" onclick="memAdd()">M+</button>
+    <button class="calc-btn btn-num" onclick="inputDigit('0')">0</button>
+    <button class="calc-btn btn-num" onclick="toggleSign()">+/-</button>
+    <button class="calc-btn btn-num" onclick="inputDot()">.</button>
+    <button class="calc-btn btn-op" onclick="setOp('+')">+</button>
+    <button class="calc-btn btn-op" onclick="calculate()">=</button>
+  </div>
+
+  <script>
+    let currentVal = "0";
+    let previousVal = null;
+    let operation = null;
+    let resetDisplay = false;
+    let memory = 0;
+
+    const display = document.getElementById("display");
+    const memIndicator = document.getElementById("memIndicator");
+
+    function updateDisplay() {
+      display.innerText = currentVal;
+    }
+
+    function inputDigit(digit) {
+      if (resetDisplay || currentVal === "0") {
+        currentVal = digit;
+        resetDisplay = false;
+      } else {
+        if (currentVal.length < 16) {
+          currentVal += digit;
+        }
+      }
+      updateDisplay();
+    }
+
+    function inputDot() {
+      if (resetDisplay) {
+        currentVal = "0.";
+        resetDisplay = false;
+      } else if (!currentVal.includes(".")) {
+        currentVal += ".";
+      }
+      updateDisplay();
+    }
+
+    function clearEntry() {
+      currentVal = "0";
+      updateDisplay();
+    }
+
+    function clearAll() {
+      currentVal = "0";
+      previousVal = null;
+      operation = null;
+      resetDisplay = false;
+      updateDisplay();
+    }
+
+    function backspace() {
+      if (resetDisplay) return;
+      if (currentVal.length > 1) {
+        currentVal = currentVal.slice(0, -1);
+      } else {
+        currentVal = "0";
+      }
+      updateDisplay();
+    }
+
+    function toggleSign() {
+      if (currentVal !== "0") {
+        if (currentVal.startsWith("-")) {
+          currentVal = currentVal.substring(1);
+        } else {
+          currentVal = "-" + currentVal;
+        }
+        updateDisplay();
+      }
+    }
+
+    function setOp(op) {
+      if (operation && !resetDisplay) {
+        calculate();
+      }
+      previousVal = parseFloat(currentVal);
+      operation = op;
+      resetDisplay = true;
+    }
+
+    function calculate() {
+      if (operation === null || previousVal === null) return;
+      const current = parseFloat(currentVal);
+      let res = 0;
+      switch (operation) {
+        case "+": res = previousVal + current; break;
+        case "-": res = previousVal - current; break;
+        case "*": res = previousVal * current; break;
+        case "/":
+          if (current === 0) {
+            currentVal = "Erro";
+            updateDisplay();
+            resetDisplay = true;
+            operation = null;
+            return;
+          }
+          res = previousVal / current;
+          break;
+      }
+      currentVal = String(Number(res.toFixed(10)));
+      operation = null;
+      previousVal = null;
+      resetDisplay = true;
+      updateDisplay();
+    }
+
+    function calcSqrt() {
+      const val = parseFloat(currentVal);
+      if (val < 0) {
+        currentVal = "Erro";
+      } else {
+        currentVal = String(Number(Math.sqrt(val).toFixed(10)));
+      }
+      resetDisplay = true;
+      updateDisplay();
+    }
+
+    function calcPercent() {
+      const val = parseFloat(currentVal);
+      currentVal = String(val / 100);
+      resetDisplay = true;
+      updateDisplay();
+    }
+
+    function calcInvert() {
+      const val = parseFloat(currentVal);
+      if (val === 0) {
+        currentVal = "Erro";
+      } else {
+        currentVal = String(Number((1 / val).toFixed(10)));
+      }
+      resetDisplay = true;
+      updateDisplay();
+    }
+
+    function memClear() {
+      memory = 0;
+      memIndicator.innerText = "";
+    }
+
+    function memRecall() {
+      currentVal = String(memory);
+      resetDisplay = true;
+      updateDisplay();
+    }
+
+    function memSave() {
+      memory = parseFloat(currentVal);
+      memIndicator.innerText = memory !== 0 ? "M" : "";
+      resetDisplay = true;
+    }
+
+    function memAdd() {
+      memory += parseFloat(currentVal);
+      memIndicator.innerText = memory !== 0 ? "M" : "";
+      resetDisplay = true;
+    }
+  </script>
+</body>
+</html>
+
